@@ -1,0 +1,18 @@
+#!/bin/bash
+
+printf '\e[?25l'  # Masquer le curseur
+
+compteur=0
+
+while [ $compteur -le 100 ]; do
+  printf "Traitement en cours... ["
+  for i in $(seq $(($compteur / 2))); do printf '-'; done
+  for i in $(seq $((50 - $compteur / 2))); do printf ' '; done
+  printf "] [${compteur}/100]\r"
+  compteur=$(($compteur + 1))
+  sleep 0.05
+done
+
+printf '\nTerminé ! Rien n’a été accompli avec succès.\n'
+
+printf '\e[?25h'  # Afficher le curseur

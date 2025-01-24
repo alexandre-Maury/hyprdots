@@ -1,0 +1,32 @@
+#!/bin/bash
+
+source $HOME/Scripts/TUI  # Importer les fonctions TUI
+
+pkgManagement="dialog 'Gestion des paquets' \
+  'Mettre à jour' 'sudo pacman -Syu' \
+  'Installer un paquet' 'read -p \"Paquet(s) à installer : \" -a packages; \
+    sudo pacman -S \${packages[@]}' \
+  'Désinstaller un paquet' 'read -p \"Paquet(s) à supprimer : \" -a packages; \
+    sudo pacman -Rs \${packages[@]}' \
+  'Supprimer les paquets orphelins' 'sudo pacman -Rns \$(pacman -Qtdq) || printf \"\e[A\033[2KAucun paquet orphelin trouvé.\n\"' \
+  'Vider le cache des paquets' 'yes | sudo pacman -Scc' \
+  'Mettre à jour les miroirs' 'echo \"Fichier de configuration utilisé : /etc/xdg/reflector/reflector.conf\"; sudo reflector @/etc/xdg/reflector/reflector.conf' \
+  'Retour' 'prompt=false'"
+
+themes="dialog 'Thèmes' \
+  'Définir le fond d\'écran' ' $HOME/Scripts/SetWall \$(( zenity --file-selection) 2>&1 | tail -n1)' \
+  'Everforest' '$HOME/Scripts/SetTheme 1' \
+  'Catppuccin Mocha' '$HOME/Scripts/SetTheme 2' \
+  'Retour' 'prompt=false'"
+
+while true; do
+  prompt=true
+  dialog 'Boîte à outils' \
+    'Gestion des paquets' "$pkgManagement" \
+    'Thèmes' "$themes" \
+    'Quitter' 'exit 0'
+  if [[ $prompt == true ]]; then printf '\n'; read -n 1 -srp 'Appuyez sur une touche pour continuer...'; fi
+done
+
+# Les guillemets dans les guillemets sont assez déroutants, donc cela peut être un peu chaotique mais ça fonctionne
+# De plus, malheureusement, les commentaires dans ce bloc massif de code risquent de le rendre encore plus confus

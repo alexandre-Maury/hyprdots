@@ -1,0 +1,165 @@
+#!/bin/bash
+
+# Ce script est principalement une preuve de concept amusante.
+# Il n'est pas très bien optimisé (bien que je travaille là-dessus)
+# et Bash n'est tout simplement pas idéal pour une interface utilisateur textuelle (TUI).
+
+# Ce fichier ne contient que des fonctions. Le script ne fait rien seul.
+# Il est conçu pour être utilisé comme une bibliothèque. Il suffit de le "sourcer" dans un autre fichier.
+
+# Explication
+
+#     Fonction printh : Affiche du texte avec une couleur de fond et de texte spécifique. Elle est utilisée pour mettre en surbrillance le texte sélectionné.
+
+#     Fonction refresh : Dessine une interface dans le terminal avec des cadres et le titre de la page, suivi des options, en les centrant dans la fenêtre du terminal. Les options apparaissent numérotées et sont surlignées lorsque sélectionnées.
+
+#     Fonction dialog : Gère l'affichage d'un menu et le contrôle du curseur dans l'interface textuelle. Elle permet de naviguer dans le menu avec les touches fléchées et de sélectionner une option en appuyant sur "Entrée", qui exécute la commande associée.
+
+
+# Afficher du texte surligné
+printh() {
+  if [[ -n $2 ]]; then
+    args=(setab $2)  # Définir la couleur de fond
+  fi
+  if [[ -n $3 ]]; then
+    args+=(setaf $3)  # Définir la couleur du texte
+  fi
+  if [[ $2 -lt 0 ]]; then
+    smso=''
+  else
+    smso=$(tput smso ${args[*]})  # Pour le surlignement et la couleur du texte
+  fi
+
+  printf "%s" "${smso}${1}"
+  if [[ ! $4 == true ]]; then
+    printf "$(tput sgr0)"  # Réinitialiser le format si $4 n'est pas vrai
+  fi
+}
+
+
+
+refresh() {
+  # Syntaxe : titre-de-page titre-option1 commande-option1 titre-option2 commande-option2 etc.
+  # Les commandes ne sont pas utilisées ici, mais il est plus simple de les passer quand même
+
+  tput reset  # Effacer le terminal
+
+  # ---- Définir les variables ----
+  local maxBoxWidth=160
+  local maxBoxHeight=$((40 + $optionCount))
+
+  if [[ $COLUMNS -ge $maxBoxWidth ]]; then
+    local boxWidth=$maxBoxWidth
+  else
+    local boxWidth=$COLUMNS
+  fi
+
+  if [[ $LINES -ge $maxBoxHeight ]]; then
+    local boxHeight=$maxBoxHeight
+  else
+    local boxHeight=$LINES
+  fi
+
+  local leadingColumns=$((($COLUMNS - $boxWidth) / 2))
+  local leadingColumns=$(for i in $(seq $leadingColumns); do printf ' '; done)
+
+  local leadingLines=$((($LINES - $boxHeight) / 2))
+  for i in $(seq $leadingLines); do printf '\n'; done
+
+  # ---- Dessiner le haut de la boîte avec le titre ----
+  local spaceCount=$(($boxWidth - ${#pageTitle} - 4))
+  local line=$(for i in $(seq $(($spaceCount / 2))); do printf '─'; done)
+
+  printf "${leadingColumns}┌"
+
+  printf "$line"
+  printf "$(tput bold) $pageTitle $(tput sgr0)"
+  printf "$line"
+
+  if [[ ( $(($boxWidth % 2)) -eq 0 && $((${#pageTitle} % 2)) -eq 1 ) || ( $(($boxWidth % 2)) -eq 1 && $((${#pageTitle} % 2)) -eq 0 ) ]]; then
+    printf '─'
+  fi
+  printf '┐\n'
+
+  # ---- Dessiner les côtés de la boîte sans contenu ----
+  local spaceCount=$(($boxWidth - 2))
+
+  for i in $(seq $(($boxHeight-$optionCount-2))); do
+    printf "${leadingColumns}│"
+    printf "\e[${spaceCount}C"
+    printf '│\n'
+  done
+
+  # ---- Dessiner les options ----
+  for i in $(seq 0 2 $(($optionCount * 2 - 2))); do
+    local optNumber=$(($i / 2 + 1))
+    local spaceCount=$(($spaceCount - ${#options[$i]} - 2 - ${#optNumber}))
+    local spaces=$(for i in $(seq $(($spaceCount))); do printf ' '; done)
+
+    printf "${leadingColumns}│"
+    if [[ $(($i / 2)) -eq $option ]]; then
+      printh "${optNumber}. ${options[$i]}" 7 0 true
+      printh "$spaces" -1 -1 true
+      printf "$(tput sgr0)"
+    else
+      printf "${optNumber}. ${options[$i]}"
+      printf "$spaces"
+    fi
+    printf '│\n'
+    spaceCount=$(($boxWidth - 2))
+  done
+
+  # ---- Dessiner le bas de la boîte ----
+  printf "${leadingColumns}└"
+  for i in $(seq $(($boxWidth-2))); do printf '─'; done
+  printf '┘'
+}
+
+
+
+dialog() {
+  # Syntaxe : titre-de-page titre-option1 commande-option1 titre-option2 commande-option2 etc.
+
+  # ---- Vérifier le nombre d'arguments ----
+  if [[ $(($# % 2)) -eq 0 ]] || [[ $# -eq 1 ]]; then
+    local errDetails=($(caller))
+    echo "${errDetails[1]}: ligne ${errDetails[0]}: dialog: nombre d'arguments invalide"
+    exit 1
+  fi
+
+  # ---- Définir les variables ----
+  pageTitle=$1
+  optionCount=$((($#-1)/2))
+  option=0
+  options=("$@")
+  options=("${options[@]:1}")
+
+  # ---- Boucle principale ----
+  while true; do
+    if [[ $noRefresh != true ]]; then
+      refresh "$@"
+    fi
+    noRefresh=false
+
+    read -rsn1 mode
+    if [[ $mode == $(printf "\u1b") ]]; then
+      read -rsn2 mode
+    fi
+
+    case $mode in
+      '[D' | '[A') if [[ $option -gt 0 ]]; then option=$(($option-1)); else noRefresh=true; fi ;;
+      '[C' | '[B') if [[ $option -lt $(($optionCount - 1)) ]]; then option=$(($option+1)); else noRefresh=true; fi ;;
+      '1'        ) if [[ $optionCount -ge 1 ]]; then option=0; else noRefresh=true; fi ;;
+      '2'        ) if [[ $optionCount -ge 2 ]]; then option=1; else noRefresh=true; fi ;;
+      '3'        ) if [[ $optionCount -ge 3 ]]; then option=2; else noRefresh=true; fi ;;
+      '4'        ) if [[ $optionCount -ge 4 ]]; then option=3; else noRefresh=true; fi ;;
+      '5'        ) if [[ $optionCount -ge 5 ]]; then option=4; else noRefresh=true; fi ;;
+      '6'        ) if [[ $optionCount -ge 6 ]]; then option=5; else noRefresh=true; fi ;;
+      '7'        ) if [[ $optionCount -ge 7 ]]; then option=6; else noRefresh=true; fi ;;
+      '8'        ) if [[ $optionCount -ge 8 ]]; then option=7; else noRefresh=true; fi ;;
+      '9'        ) if [[ $optionCount -ge 9 ]]; then option=8; else noRefresh=true; fi ;;
+      ''         ) tput reset; eval "${options[$(($option * 2 + 1))]}"; break ;;
+      *          ) >&2 noRefresh=true ;;
+    esac
+  done
+}

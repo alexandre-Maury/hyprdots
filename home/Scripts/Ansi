@@ -1,0 +1,55 @@
+#!/usr/bin/python3
+
+print()
+print("==== Séquences d'échappement ANSI ====")
+print()
+
+class CodesANSI:
+    Rouge = '\033[31m'
+    Jaune = '\033[93m'
+    Vert = '\033[32m'
+    Bleu = '\033[34m'
+    Gras = '\033[1m'
+    Réinitialiser = '\033[0m'
+
+print(CodesANSI.Rouge + 'ERREUR : Tout va bien')
+print(CodesANSI.Jaune + 'AVERTISSEMENT : Rien ne s\'est mal passé')
+print(CodesANSI.Bleu + "BLEU : Je suis bleu")
+print(CodesANSI.Vert + 'Tout est bon' + CodesANSI.Réinitialiser)
+print()
+print()
+
+for i in range(30, 37 + 1):
+    print("\033[%dm%d\t\t\033[%dm%d" % (i, i, i + 60, i + 60))
+print('\033[0m')  # Réinitialise la couleur et ajoute un saut de ligne
+
+print(f"{CodesANSI.Gras}Utilisation des couleurs :")
+print(f"\\033[<NOMBRE>m{CodesANSI.Réinitialiser}")
+
+print()
+
+print("╭───────────────────────────────────╮")
+print("│  \\033[0m                          │ Réinitialiser")
+print("│  \\033[2K                          │ Effacer la ligne")
+print("│  \\033[<L>;<C>H ou \\033[<L>;<C>f   │ Positionner le curseur à la ligne L et la colonne C")
+print("│  \\033[<N>A                        │ Déplacer le curseur vers le haut de N lignes")
+print("│  \\033[<N>B                        │ Déplacer le curseur vers le bas de N lignes")
+print("│  \\033[<N>C                        │ Déplacer le curseur vers l'avant de N colonnes")
+print("│  \\033[<N>D                        │ Déplacer le curseur vers l'arrière de N colonnes")
+print("│                                   │")
+print("│  \\033[2J                          │ Effacer l'écran et déplacer le curseur à (0,0)")
+print("│  \\033[K                           │ Effacer jusqu'à la fin de la ligne")
+print("│  \\033[s                           │ Sauvegarder la position du curseur")
+print("│  \\033[u                           │ Restaurer la position du curseur")
+print("│                                   │")
+print("│  \\033[4m                          │ Soulignement activé")
+print("│  \\033[24m                         │ Soulignement désactivé")
+print("│                                   │")
+print("│  \\033[1m                          │ Gras activé")
+print("│  \\033[21m                         │ Gras désactivé")
+print("╰───────────────────────────────────╯")
+
+print()
+print('\033[4m' + "Je suis souligné." + CodesANSI.Réinitialiser)
+print('\033[1m' + "Je suis en gras !" + CodesANSI.Réinitialiser)
+print()

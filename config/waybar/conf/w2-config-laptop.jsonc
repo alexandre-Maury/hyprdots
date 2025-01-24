@@ -1,0 +1,287 @@
+//------Layout v.1 laptop ------------------------------  
+{
+     "layer": "top",
+      "position": "top",
+      //"mode": "dock",
+      "exclusive": "true",
+      "passthrough": "false",
+      "height": "15",
+      "gtk-layer-shell": true,
+         
+      
+    //--- Modules ------------------------------
+         "modules-left": ["hyprland/workspaces", "custom/themeswitcher", "custom/settings", "group/system", "group/networking", "custom/traffic"],       
+         "modules-center": ["clock"],
+         "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "custom/dunst", "custom/updates", "battery", "backlight", "group/power"],
+       
+     "hyprland/workspaces": {
+          "active-only": false,
+          "format": "{icon}",
+          "tooltip": false,
+          "all-outputs": true,
+          "format-icons": {
+              "active": "",
+              "default": ""
+          },
+          "persistent-workspaces": {
+              "*": 5
+          }
+     },   
+  
+     "custom/themeswitcher": {
+          "format": "<span font='9'></span>",
+          "on-click": "$HOME/.config/waybar/scripts/switch-waybar-config.sh",
+          "tooltip-format": "",       
+          "tooltip": false,
+          "signal": 8   
+     },
+  
+     "custom/settings": {
+          "format": "",
+          "on-click": "$HOME/.config/waybar/scripts/settings.sh",        
+          "tooltip-format": "",
+          "signal": 8,
+          "tooltip": false             
+     },
+
+
+     "group/system": {
+          "orientation": "horizontal",
+          "drawer": {
+               "transition-duration": 600,
+               "transition-right-to-left": false
+          },
+          "modules": [
+               "custom/system",
+               "cpu",
+               "custom/cputemp",
+               "custom/memory"
+          ]
+     },
+
+     "custom/system": {
+          "format": "<span font='9'></span>"
+     },
+
+    "cpu": {
+          "interval": 1,
+          "on-click": "$HOME/.config/waybar/scripts/cpu.sh --popup",
+          "format": "Cpu {icon0}{icon1}{icon2}{icon3} {usage:>2}% ",
+          "tooltip": false,
+          "format-icons": [
+               "<span color='#8CAAEE'>▁</span>", // blue
+               "<span color='#99D1DB'>▂</span>", // sky
+               "<span color='#A6D189'>▃</span>", // green
+               "<span color='#A6D189'>▄</span>", // green
+               "<span color='#E5C890'>▅</span>", // yellow
+               "<span color='#E5C890'>▆</span>", // yellow
+               "<span color='#EF9F76'>▇</span>", // orange
+               "<span color='#E78284'>█</span>"  // red
+          ] 
+     },
+
+     "custom/cputemp":{
+          "exec": "$HOME/.config/waybar/scripts/temperature.sh",
+          "interval": 1,
+          "tooltip": false,
+          "on-click": "$HOME/.config/waybar/scripts/cpu-temp.sh --popup",
+          "on-click-right": "$HOME/.config/waybar/scripts/btop.sh",  
+     }, 
+
+     "custom/memory":{  
+          "exec": "$HOME/.config/waybar/scripts/free-mem.sh",
+          "interval": 1,
+          "tooltip": false,
+          "on-click": "$HOME/.config/waybar/scripts/htop.sh",           
+     },
+
+  
+     "custom/reseau": {
+          "format": "{}",
+          "exec": "$HOME/.config/waybar/scripts/network-ip.sh status"
+  
+     },
+  
+     "custom/adressip": {
+          "format": "{}",
+          "exec": "$HOME/.config/waybar/scripts/network-ip.sh network",
+          "interval": 5
+     },
+  
+     "group/networking": {
+          "orientation": "horizontal",
+          "drawer": {
+               "transition-duration": 600,
+               "transition-right-to-left": false
+          },
+          "modules": [
+               "custom/reseau",
+               "custom/adressip"
+          ]
+     },
+  
+     "custom/traffic": {
+          "exec": "$HOME/.config/waybar/scripts/network-traffic.sh",
+          //"return-type": "json",
+          //"format": " Speed: {}",    // optional
+     },
+  
+     "tray": {
+          "icon-size": 13,
+          "spacing": 10,
+          "tooltip": false
+  
+     },  
+  
+     "custom/pipewire-audio": {
+          "tooltip": false,
+          "max-length": 8,
+          "exec": "$HOME/.config/waybar/scripts/pipewire-volume.sh",
+          "on-click": "sh -c 'touch /tmp/waybar_toggle_mute_volume'",
+          "on-click-right": "pavucontrol-qt",      
+          "on-scroll-up": "sh -c 'touch /tmp/waybar_volume_up'",
+          "on-scroll-down": "sh -c 'touch /tmp/waybar_volume_down'",
+          "scroll-step": 2,
+          "restart-interval": 5
+       
+     },  
+  
+     "custom/pipewire-mic": {
+          "tooltip": false,
+          "max-length": 8,
+          "exec": "$HOME/.config/waybar/scripts/pipewire-mic.sh",
+          "on-click": "sh -c 'touch /tmp/waybar_toggle_mute_microphone'",
+          "on-click-right": "pavucontrol-qt",      
+          "on-scroll-up": "sh -c 'touch /tmp/waybar_microphone_up'",
+          "on-scroll-down": "sh -c 'touch /tmp/waybar_microphone_down'",
+          "scroll-step": 2,
+          "restart-interval": 5
+       
+     },  
+  
+     "clock": {
+          "format": " {:%R  %a,%d %b} ",
+          "format-alt": " {:%H:%M} ",        
+          "tooltip-format": "<tt><small>{calendar}</small></tt>",
+          "calendar": {
+               "mode"          : "year",
+               "mode-mon-col"  : 3,
+               "weeks-pos"     : "right",
+               "on-scroll"     : 1,
+               "on-click-right": "mode",
+               "format": {
+                    "months":     "<span color='#ffead3'><b>{}</b></span>",
+                    "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+                    "weeks":      "<span color='#A6D189'><b>W{}</b></span>",
+                    "weekdays":   "<span color='#E5C890'><b>{}</b></span>",
+                    "today":      "<span color='#E78284'><b><u>{}</u></b></span>"
+               }
+          },
+          "actions":  {
+               "on-click-right": "mode",
+               "on-click-forward": "tz_up",
+               "on-click-backward": "tz_down",
+               "on-scroll-up": "shift_up",
+               "on-scroll-down": "shift_down"
+          }
+            
+     },
+  
+     "custom/dunst": {
+          "exec": "$HOME/.config/waybar/scripts/notifications.sh",
+          "on-click": "~/.config/waybar/scripts/notifications.sh toggle",
+          "interval": 1,
+          "tooltip": false           
+     }, 
+  
+     "custom/updates": {
+          "exec": "$HOME/.config/waybar/scripts/updates.sh",
+          "exec-if": "exit 0",
+          "interval": 300,      
+          "format": "<span font='10' rise='1000'>󰏔 </span>{}",
+          "on-click": "kitty --title 'Updates' sh -c 'sudo pacman -Syu && yay -Syu --noconfirm && ~/.config/waybar/scripts/updates.sh && pkill -RTMIN+8 waybar'",
+          "signal": 8,
+          "tooltip": false       
+            
+     }, 
+  
+     "group/power": {
+
+          "orientation": "horizontal",
+          "drawer": {
+            "transition-duration": 600,
+            "transition-left-to-right": false
+          },
+          "modules": [
+            "custom/power",
+            "custom/firmware",
+            "custom/suspend",
+            "custom/logout",
+            "custom/reboot"
+          ]
+     },
+
+     "custom/power": {
+          "format": "<span font='9' rise='1000'></span>",         
+          "tooltip": false,
+          "on-click": "$HOME/.config/waybar/scripts/power.sh -s"
+          
+     },   
+     
+     "custom/firmware": {
+          "format": "  ",
+          "tooltip": false,
+          "on-click": "$HOME/.config/waybar/scripts/power.sh -f"
+     },
+
+     "custom/suspend": {
+          "format": "  ",
+          "tooltip": false,
+          "on-click": "gtklock & sleep 1; systemctl suspend"
+     },
+
+     "custom/logout": {
+          "format": "  ",
+          "tooltip": false,
+          "on-click": "$HOME/.config/waybar/scripts/power.sh -l"
+     },
+
+     "custom/reboot": {
+          "format": "   ",
+          "tooltip": false,
+          "on-click": "$HOME/.config/waybar/scripts/power.sh -r"
+     },
+     
+     "battery": {
+          "exec": "$HOME/.config/waybar/scripts/battery.sh",      
+          "interval": 60,  // Adjust the interval as needed
+          "return-type": "json",
+          "format": "{icon} {capacity}%",
+          "format-charging": "{icon} Charging {capacity}%",
+          "format-plugged": "{icon} Plugged {capacity}%",
+          "format-alt": "{time} {icon}",
+          "format-icons": [
+               "<span font='9'> </span>",
+               "<span font='9'> </span>",
+               "<span font='9'> </span>",
+               "<span font='9'> </span>",
+               "<span font='9'> </span>"
+          ],     
+          "tooltip": true
+     },    
+     "backlight": {
+          "device": "intel_backlight",
+          "format": "{icon} {percent}%",
+          "format-icons": [
+               "<span font='9'> </span>",
+               "<span font='9'> </span>",
+               "<span font='9'>󰖨 </span>"
+          ],
+          "on-scroll-up": "brightnessctl set 1%+",
+          "on-scroll-down": "brightnessctl set 1%-",
+          "tooltip": false,
+          "min-length": 6    
+     }
+}      
+  
+  

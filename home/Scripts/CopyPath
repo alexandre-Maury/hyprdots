@@ -1,0 +1,24 @@
+#!/bin/sh
+
+if [ "$#" -gt 1 ]; then
+    echo "Nombre d'arguments invalide."
+    exit 1
+fi
+
+if [ ! -e "$1" ] && [ -n "$1" ]; then
+    echo "Fichier ou répertoire inexistant à l'emplacement : $1"
+    exit 1
+fi
+
+if [ "$#" -eq 0 ]; then
+    chemin=$(pwd)
+else
+    chemin=$(realpath $1)
+fi
+
+wl-copy $chemin
+
+echo 'Copié dans le presse-papiers :'
+echo $chemin
+
+exit 0

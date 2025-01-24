@@ -1,0 +1,22 @@
+#!/bin/bash
+
+printf '\e[?25l'  # Cacher le curseur
+
+stages=('/' '-' '\' '|')
+stage=0
+counter=0
+
+while [ $counter -lt 100 ]; do
+  # Utilise un retour chariot pour revenir au début de la ligne
+  printf "Faire quelque chose... ${stages[$stage]} \r"
+  stage=$(($stage + 1))
+  if [[ stage -gt 3 ]]; then
+    stage=0
+  fi
+  counter=$(($counter + 1))
+  sleep 0.2
+done
+
+echo "Terminé ! Rien n'a été accompli avec succès."
+
+printf '\e[?25h'  # Afficher le curseur
