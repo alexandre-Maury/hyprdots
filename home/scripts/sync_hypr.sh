@@ -15,19 +15,19 @@ if [ ! -d "$REPO_DIR" ]; then
     exit 1
 fi
 
-git config --global --add safe.directory $REPO_DIR
+# git config --global --add safe.directory $REPO_DIR
 
 # Vérification et mise à jour du dépôt
 cd "$REPO_DIR" || exit
-sudo git fetch origin
+git fetch origin
 
 # Vérifie si le dépôt local est à jour
-LOCAL=$(sudo git rev-parse HEAD)
-REMOTE=$(sudo git rev-parse origin/main)
+LOCAL=$(git rev-parse HEAD)
+REMOTE=$(git rev-parse origin/main)
 
 if [ "$LOCAL" != "$REMOTE" ]; then
     echo "Le dépôt local n'est pas à jour. Mise à jour..."
-    sudo git pull origin main --rebase
+    git pull origin main --rebase
     notify_user "Le dépôt a été mis à jour avec succès."
 else
     echo "Le dépôt est déjà à jour."
