@@ -36,6 +36,7 @@ fi
 
 # Synchronisation des fichiers
 echo "Synchronisation des fichiers de configuration..."
+
 rsync -av "$REPO_DIR/config/hypr/" "$HOME/.config/hypr"
 rsync -av "$REPO_DIR/config/kitty/" "$HOME/.config/kitty"
 rsync -av "$REPO_DIR/config/rofi/" "$HOME/.config/rofi"
