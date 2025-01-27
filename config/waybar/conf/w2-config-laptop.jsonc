@@ -1,4 +1,4 @@
-//------Layout v.1 laptop ------------------------------  
+//------Layout v.1 laptop test ------------------------------  
 {
      "layer": "top",
       "position": "top",
@@ -12,7 +12,7 @@
     //--- Modules ------------------------------
          "modules-left": ["hyprland/workspaces", "custom/themeswitcher", "custom/settings", "group/system", "group/networking", "custom/traffic"],       
          "modules-center": ["clock"],
-         "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "custom/dunst", "custom/updates", "battery", "backlight", "group/power"],
+         "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "backlight", "custom/dunst", "custom/updates", "battery", "group/power"],
        
      "hyprland/workspaces": {
           "active-only": false,
@@ -254,7 +254,7 @@
      
      "battery": {
           "exec": "$HOME/.config/waybar/scripts/battery.sh",      
-          "interval": 60,  // Adjust the interval as needed
+          "interval": 60,  
           "return-type": "json",
           "format": "{icon} {capacity}%",
           "format-charging": "{icon} Charging {capacity}%",
