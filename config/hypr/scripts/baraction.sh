@@ -4,10 +4,10 @@
 dir2="$HOME/.config/waybar/scripts"
 
 # Vérifier que le répertoire tmp existe, sinon le créer
-mkdir -p "$HOME/.config/waybar/tmp"
+mkdir -p "$HOME/.check/waybar/tmp"
 
 # Créer un fichier de flag d'exécution si ce n'est pas déjà fait
-FLAG_FILE="$HOME/.config/waybar/tmp/execution_flag"
+FLAG_FILE="$HOME/.check/waybar/tmp/execution_flag"
 
 # Fonction pour chmod sur les scripts dans un répertoire
 chmod_scripts() {
@@ -58,7 +58,7 @@ create_symlinks_and_run_baraction() {
 create_symlinks_and_run_baraction
 
 # Définir le chemin pour le fichier de flag d'exécution
-EXECUTION_ONCE_FLAG="$HOME/.config/waybar/tmp/execution_once_flag"
+EXECUTION_ONCE_FLAG="$HOME/.check/waybar/tmp/execution_once_flag"
 
 # Si le fichier de flag d'exécution n'existe pas
 if [ ! -e "$EXECUTION_ONCE_FLAG" ]; then
