@@ -1,63 +1,66 @@
 #!/bin/bash
 
 # Variables
-REPO_DIR="/opt/build/hyprdots"
-CONFIG_DIR="$HOME/.config"
+repo_dir_hyprdots="/opt/build/hyprdots"
+repo_dir_archhyprland="/opt/build/arch-hyprland"
 
 # Fonction pour afficher les notifications
 notify_user() {
     dunstify -u low -a "MAJ" "$1"
 }
 
-# Vérifier si le dépôt existe
-if [ ! -d "$REPO_DIR" ]; then
-    notify_user "Erreur : Le dépôt $REPO_DIR est introuvable."
-    exit 1
-fi
+# Fonction pour gérer la mise à jour d'un dépôt Git
+update_repo() {
+    local repo_dir="$1"
+    local repo_name="$2"
 
-# git config --global --add safe.directory $REPO_DIR
+    if [[ -d "$repo_dir" && -d "$repo_dir/.git" ]]; then
+        echo "Mise à jour du dépôt $repo_name..."
 
-# Vérification et mise à jour du dépôt
-cd "$REPO_DIR" || exit
-git fetch origin
+        cd "$repo_dir" || { echo "Erreur lors de la navigation dans le dépôt $repo_name."; exit 1; }
+        git reset --hard # Annuler les modifications locales
+        git fetch origin || { echo "Erreur lors du fetch du dépôt $repo_name."; exit 1; }
 
-# Vérifie si le dépôt local est à jour
-LOCAL=$(git rev-parse HEAD)
-REMOTE=$(git rev-parse origin/main)
+        local local_commit=$(git rev-parse HEAD)
+        local remote_commit=$(git rev-parse origin/main)
 
-if [ "$LOCAL" != "$REMOTE" ]; then
-    echo "Le dépôt local n'est pas à jour. Mise à jour..."
-    git pull origin main --rebase
-    notify_user "Le dépôt a été mis à jour avec succès."
-else
-    echo "Le dépôt est déjà à jour."
-    notify_user "Le dépôt est déjà à jour."
-fi
+        if [ "$local_commit" != "$remote_commit" ]; then
+            echo "Le dépôt $repo_name local n'est pas à jour. Mise à jour..."
+            git pull origin main --rebase || { echo "Erreur lors du pull du dépôt $repo_name."; exit 1; }
+            notify_user "Le dépôt $repo_name a été mis à jour avec succès."
+        else
+            echo "Le dépôt $repo_name est déjà à jour."
+            notify_user "Le dépôt $repo_name est déjà à jour."
+        fi
+    else
+        echo "Le répertoire $repo_dir n'existe pas ou ce n'est pas un dépôt Git valide."
+        exit 1
+    fi
+}
 
-# Synchronisation des fichiers
+# Mise à jour des dépôts
+update_repo "$repo_dir_hyprdots" "hyprdots"
+update_repo "$repo_dir_archhyprland" "arch hyprland"
+
+# Optionnel : Synchronisation des fichiers de configuration
 echo "Synchronisation des fichiers de configuration..."
 
-rsync -av "$REPO_DIR/config/hypr/" "$HOME/.config/hypr"
-rsync -av "$REPO_DIR/config/kitty/" "$HOME/.config/kitty"
-rsync -av "$REPO_DIR/config/rofi/" "$HOME/.config/rofi"
-rsync -av "$REPO_DIR/config/waybar/" "$HOME/.config/waybar"
-rsync -av "$REPO_DIR/config/qt5ct/" "$HOME/.config/qt5ct"
-rsync -av "$REPO_DIR/config/qt6ct/" "$HOME/.config/qt6ct"
-rsync -av "$REPO_DIR/config/nvim/" "$HOME/.config/nvim"
-rsync -av "$REPO_DIR/config/dunst/" "$HOME/.config/dunst"
-rsync -av "$REPO_DIR/config/gtk-3.0/" "$HOME/.config/gtk-3.0"
+# Décommente et adapte les commandes rsync si nécessaire
+# rsync -av "$repo_dir_hyprdots/config/hypr/" "$HOME/.config/hypr"
+# rsync -av "$repo_dir_hyprdots/config/kitty/" "$HOME/.config/kitty"
+# rsync -av "$repo_dir_hyprdots/config/rofi/" "$HOME/.config/rofi"
+# rsync -av "$repo_dir_hyprdots/config/waybar/" "$HOME/.config/waybar"
+# rsync -av "$repo_dir_hyprdots/config/qt5ct/" "$HOME/.config/qt5ct"
+# rsync -av "$repo_dir_hyprdots/config/qt6ct/" "$HOME/.config/qt6ct"
+# rsync -av "$repo_dir_hyprdots/config/nvim/" "$HOME/.config/nvim"
+# rsync -av "$repo_dir_hyprdots/config/dunst/" "$HOME/.config/dunst"
+# rsync -av "$repo_dir_hyprdots/config/gtk-3.0/" "$HOME/.config/gtk-3.0"
 
-rsync -av "$REPO_DIR/home/scripts/" $HOME/scripts
+# rsync -av "$repo_dir_hyprdots/home/scripts/" "$HOME/scripts"
 
-chmod +x $HOME/.config/waybar/scripts/*
-chmod +x $HOME/.config/hypr/scripts/*
-chmod +x $HOME/scripts/*
+# chmod +x $HOME/.config/waybar/scripts/*
+# chmod +x $HOME/.config/hypr/scripts/*
+# chmod +x $HOME/scripts/*
 
 # Notification de fin
 notify_user "Vos fichiers de configuration sont à jour."
-
-
-
-
-
-
