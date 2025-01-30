@@ -1,0 +1,143 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""               
+"               
+"               ██╗   ██╗██╗███╗   ███╗██████╗  ██████╗
+"               ██║   ██║██║████╗ ████║██╔══██╗██╔════╝
+"               ██║   ██║██║██╔████╔██║██████╔╝██║     
+"               ╚██╗ ██╔╝██║██║╚██╔╝██║██╔══██╗██║     
+"                ╚████╔╝ ██║██║ ╚═╝ ██║██║  ██║╚██████╗
+"                 ╚═══╝  ╚═╝╚═╝     ╚═╝╚═╝  ╚═╝ ╚═════╝
+"               
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""               
+
+" === INSTALLATION AUTOMATIQUE DE VIM-PLUG ===
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent execute '!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
+" === CONFIGURATION DE VIM POUR LE DÉVELOPPEMENT ===
+
+" === PARAMÈTRES DE BASE ===
+syntax on                         
+filetype plugin indent on          
+set number                        
+set relativenumber                
+set tabstop=4                     
+set shiftwidth=4                  
+set expandtab                     
+set clipboard=unnamedplus         
+set cursorline                    
+set termguicolors                 
+set splitbelow                    
+set splitright    
+set encoding=UTF-8                
+
+" === CONFIGURATION DU GESTIONNAIRE DE PLUGINS ===
+call plug#begin('~/.vim/plugged')
+
+" === PLUGINS ===
+Plug 'morhetz/gruvbox'            " Thème Gruvbox
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'vim-airline/vim-airline'
+Plug 'preservim/nerdtree'
+Plug 'sheerun/vim-polyglot'
+Plug 'tpope/vim-fugitive'
+Plug 'ycm-core/YouCompleteMe'     " Plugin d'autocomplétion
+Plug 'scrooloose/nerdcommenter'
+Plug 'jiangmiao/auto-pairs'
+Plug 'dense-analysis/ale'
+Plug 'ryanoasis/vim-devicons'      " Icons for Vim
+Plug 'tiagofumo/vim-nerdtree-syntax-highlight'  " Syntax highlighting in NERDTree
+
+call plug#end()
+
+" === INSTALLATION AUTOMATIQUE DES PLUGINS ===
+augroup auto_install_plugins
+  autocmd!
+  autocmd VimEnter * if len(filter(values(g:plugs), '!isdirectory(v:val.dir)')) > 0 |
+        \ PlugInstall --sync | source $MYVIMRC |
+        \ endif
+augroup END
+
+" === CONFIGURATION DU THÈME ===
+autocmd VimEnter * colorscheme gruvbox  " Appliquer le thème Gruvbox après installation
+autocmd VimEnter * set background=dark   " Utiliser un fond sombre
+
+" === CONFIGURATION DES PLUGINS ===
+
+" Paramètres de NERDTree
+nnoremap <leader>n :NERDTreeFocus<CR>
+nnoremap <C-n> :NERDTree<CR>
+nnoremap <C-t> :NERDTreeToggle<CR>
+nnoremap <C-f> :NERDTreeFind<CR>
+let NERDTreeShowHidden=1             " Afficher les fichiers cachés
+
+" Activer la mise en surbrillance syntaxique dans NERDTree
+let g:NERDTreeHighlightCursorline = 1
+let g:NERDTreeHighlightFolders = 1
+let g:NERDTreeHighlightFoldersFullName = 1
+let g:NERDTreeHighlightFiles = 1
+let g:NERDTreeHighlightExecFile = 1
+
+" Paramètres de vim-airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_powerline_fonts = 1
+let g:airline#extensions#tabline#show_icons = 1
+
+" Paramètres de FZF pour la recherche de fichiers
+map <C-p> :Files<CR>
+
+" Paramètres d'ALE (linter et correcteur)
+let g:ale_fixers = {
+\   'python': ['autopep8'],
+\   'php': ['php_cs_fixer'],
+\   'html': ['prettier'],
+\   'css': ['prettier'],
+\   'javascript': ['prettier'],
+\   'c': ['clang-format'],
+\   'cpp': ['clang-format']
+\}
+let g:ale_fix_on_save = 1
+let g:ale_linters = {
+\   'python': ['flake8'],
+\   'php': ['phpcs'],
+\   'c': ['gcc'],
+\   'cpp': ['gcc']
+\}
+
+" Paires automatiques (fermeture automatique des parenthèses et guillemets)
+let g:auto_pairs = 1
+
+" === RACCOURCIS POUR COPIER ET COLLER ===
+nnoremap <C-c> "+yy            " Copier la ligne courante dans le presse-papier
+vnoremap <C-c> "+y             " Copier la sélection dans le presse-papier
+nnoremap <C-v> "+p             " Coller depuis le presse-papier
+vnoremap <C-v> "+p             " Coller dans une sélection visuelle
+
+" === CONFIGURATION DE YouCompleteMe ===
+" Instructions d'installation :
+" 1. Navigue vers le répertoire YouCompleteMe :
+"    cd ~/.vim/plugged/YouCompleteMe
+" 2. Compile avec la commande :
+"    python3 install.py --clangd-completer
+
+" Utilise <Tab> pour naviguer dans les suggestions
+inoremap <expr> <Tab> pumvisible() ? "\<C-n>" : "\<Tab>"
+
+" === PARAMÈTRES SPÉCIFIQUES AUX LANGAGES ===
+
+" Paramètres spécifiques à Python
+autocmd FileType python setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+
+" Paramètres spécifiques à PHP
+autocmd FileType php setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+
+" Paramètres pour C et C++
+autocmd FileType c,cpp setlocal expandtab tabstop=4 shiftwidth=4 softtabstop=4
+
+" Paramètres pour HTML, CSS, et Markdown
+autocmd FileType html,css,markdown setlocal expandtab tabstop=2 shiftwidth=2 softtabstop=2
+
+" Aperçu Markdown (si besoin)
+autocmd FileType markdown nnoremap <C-p> :!markdown-preview %<CR>
