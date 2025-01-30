@@ -40,7 +40,7 @@ update_repo() {
 
 # Mise à jour des dépôts
 update_repo "$repo_dir_hyprdots" "hyprdots"
-update_repo "$repo_dir_hyprarch" "arch hyprland"
+update_repo "$repo_dir_hyprarch" "hyprarch"
 
 # Optionnel : Synchronisation des fichiers de configuration
 echo "Synchronisation des fichiers de configuration..."
