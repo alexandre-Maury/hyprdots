@@ -2,7 +2,7 @@
 
 # Variables
 repo_dir_hyprdots="/opt/build/hyprdots"
-repo_dir_archhyprland="/opt/build/arch-hyprland"
+repo_dir_hyprarch="/opt/build/hyprarch"
 
 # Fonction pour afficher les notifications
 notify_user() {
@@ -40,7 +40,7 @@ update_repo() {
 
 # Mise à jour des dépôts
 update_repo "$repo_dir_hyprdots" "hyprdots"
-update_repo "$repo_dir_archhyprland" "arch hyprland"
+update_repo "$repo_dir_hyprarch" "arch hyprland"
 
 # Optionnel : Synchronisation des fichiers de configuration
 echo "Synchronisation des fichiers de configuration..."
