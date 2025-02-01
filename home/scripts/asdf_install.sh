@@ -88,5 +88,5 @@ echo "asdf local nodejs 14.17.0"
 echo  
 echo "Cela crée un fichier .tool-versions dans le répertoire courant pour définir cette version localement"  
 echo 
-echo "------------------------------------------"  | tee -a "$LOG_FILES_INSTALL"
+echo "------------------------------------------"  
 
