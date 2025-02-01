@@ -1,5 +1,19 @@
 #!/bin/bash
 
+ASDF_URL="https://github.com/asdf-vm/asdf/releases/download/v0.16.0/asdf-v0.16.0-linux-amd64.tar.gz"
+
+declare -A ASDF_PLUGINS=(
+    ["nodejs"]="https://github.com/asdf-vm/asdf-nodejs.git"
+    ["python"]="https://github.com/danhper/asdf-python"
+    ["ruby"]="https://github.com/asdf-vm/asdf-ruby.git"
+    ["java"]="https://github.com/halcyon/asdf-java.git"
+    ["golang"]="https://github.com/kennyp/asdf-golang.git"
+    ["elixir"]="https://github.com/asdf-vm/asdf-elixir.git"
+    ["php"]="https://github.com/asdf-community/asdf-php.git"
+    ["rust"]="https://github.com/code-lever/asdf-rust.git"
+    ["dotnet"]="https://github.com/hensou/asdf-dotnet.git"
+)
+
 # Repo asdf
 if [ ! -f "$HOME/.local/bin/asdf" ]; then
 
