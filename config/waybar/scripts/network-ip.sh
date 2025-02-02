@@ -4,6 +4,7 @@ option="$1"
 wifi_iface=""
 wifi_info=""
 wifi_ip=""
+wifi_signal=""
 ethernet_iface=""
 ethernet_ip=""
 found_connection=false
@@ -13,21 +14,19 @@ public_ip=""
 interfaces=$(ip -o link show | awk -F': ' '{print $2}')
 
 for iface in $interfaces; do
-	# Ignorer l'interface loopback
-    if [[ "$iface" == "lo" ]]; then
-        continue
-    fi
+    # Ignorer l'interface loopback
+    [[ "$iface" == "lo" ]] && continue
 
     # Récupérer l'adresse IP de l'interface
     ip_address=$(ip -4 addr show "$iface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 
     if [[ -n "$ip_address" ]]; then
         found_connection=true
-        if [[ "$iface" == wlan* ]]; then
+        if [[ "$iface" =~ ^wlan[0-9]+$ ]]; then
             wifi_iface=$iface
             wifi_ip=$ip_address
-            wifi_info=$(iw dev "$iface" link | grep -Eo "SSID: .+" | sed 's/SSID: //')
-            wifi_signal=$(iw dev "$iface" link | grep -Eo "signal: .+" | sed 's/signal: //')
+            wifi_info=$(iw dev "$iface" link | awk -F': ' '/SSID/ {print $2}')
+            wifi_signal=$(iw dev "$iface" link | awk -F': ' '/signal/ {print $2}')
         else
             ethernet_iface=$iface
             ethernet_ip=$ip_address
@@ -36,26 +35,25 @@ for iface in $interfaces; do
 done
 
 # Traiter l'option
-case "$1" in
-    "status")
+case "$option" in
+    "--status")
         if [[ "$found_connection" == true ]]; then
-            # Prioriser Wi-Fi
             if [[ -n "$wifi_ip" ]]; then
-                echo "   $wifi_info  ($wifi_signal)"
+                echo "${wifi_info:-Inconnu} (${wifi_signal:-N/A} dBm)"
             elif [[ -n "$ethernet_ip" ]]; then
-                echo "   $ethernet_iface"
+                echo "$ethernet_iface"
+
             fi
         else
-            echo ""
+            echo "N/A"
         fi
         ;;
-
-    "network")
+        
+    "--network")
         if [[ "$found_connection" == true ]]; then
+        
+            public_ip=$(curl -s --max-time 2 https://api.ipify.org || echo "N/A")
 
-            public_ip=$(curl -s https://api.ipify.org)
-
-            # Prioriser Wi-Fi
             if [[ -n "$wifi_ip" ]]; then
                 local_ip=$wifi_ip
             elif [[ -n "$ethernet_ip" ]]; then
@@ -63,7 +61,6 @@ case "$1" in
             fi
 
             echo "$local_ip | $public_ip"
-
         else
             echo "x.x.x.x | x.x.x.x"
         fi
@@ -74,7 +71,3 @@ case "$1" in
         exit 1
         ;;
 esac
-
-
-
-
