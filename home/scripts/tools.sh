@@ -64,6 +64,6 @@ echo "Pour activer l'environnement virtuel à l'avenir, exécutez : l'alias [ ex
 
 # echo "source $script_dir/.venv/bin/activate"
 
-echo "alias exegol=\"clear && cd $script_dir && source .venv/bin/activate && python3 exegol.py info\" " | tee -a ~/.zshrc
+echo "alias exegol=\"clear && cd $script_dir && source .venv/bin/activate && python3 exegol.py \" " | tee -a ~/.zshrc
 
 source $HOME/.zshrc
