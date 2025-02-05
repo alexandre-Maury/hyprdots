@@ -97,15 +97,19 @@
 
   
      "custom/reseau": {
-          "format": "{}",
-          "exec": "$HOME/.config/waybar/scripts/network-ip.sh status"
-  
+          "exec": "~/.config/waybar/scripts/network-ip.sh status",
+          "interval": 5,
+          "format": "{}"
+          //"return-type": "json",
+ 
      },
   
-     "custom/adressip": {
-          "format": "{}",
-          "exec": "$HOME/.config/waybar/scripts/network-ip.sh network",
-          "interval": 5
+       "custom/adressip": {
+          "exec": "~/.config/waybar/scripts/network-ip.sh network",
+          "interval": 30,
+          "format": "{}"
+          //"return-type": "json",
+
      },
   
      "group/networking": {

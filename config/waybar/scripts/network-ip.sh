@@ -1,80 +1,69 @@
 #!/bin/bash
 
-option="$1"
-wifi_iface=""
-wifi_info=""
-wifi_ip=""
-ethernet_iface=""
-ethernet_ip=""
-found_connection=false
-public_ip=""
+# Variables
+option="$1"  # Récupère l'option passée au script (--status ou --network)
+active_iface=""  # Interface active
+active_ip=""  # Adresse IP de l'interface active
+found_connection=false  # Indicateur de connexion trouvée
+public_ip="x.x.x.x"  # Adresse IP publique (valeur par défaut)
 
-# Récupérer les interfaces réseau
-interfaces=$(ip -o link show | awk -F': ' '{print $2}')
+# Fonction pour vérifier la connectivité Internet
+check_internet() {
+    ping -c 1 -W 1 8.8.8.8 >/dev/null 2>&1
+    return $?
+}
 
-for iface in $interfaces; do
-	# Ignorer l'interface loopback
-    if [[ "$iface" == "lo" ]]; then
-        continue
-    fi
-
-    # Récupérer l'adresse IP de l'interface
-    ip_address=$(ip -4 addr show "$iface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
-
-    if [[ -n "$ip_address" ]]; then
-        found_connection=true
-        if [[ "$iface" == wlan* ]]; then
-            wifi_iface=$iface
-            wifi_ip=$ip_address
-            wifi_info=$(iw dev "$iface" link | grep -Eo "SSID: .+" | sed 's/SSID: //')
-            wifi_signal=$(iw dev "$iface" link | grep -Eo "signal: .+" | sed 's/signal: //')
-        else
-            ethernet_iface=$iface
-            ethernet_ip=$ip_address
+# Récupérer l'interface active et son adresse IP
+get_active_interface() {
+    # Utiliser `ip route` pour trouver l'interface par défaut
+    active_iface=$(ip route get 8.8.8.8 2>/dev/null | awk '{print $5}')
+    if [[ -n "$active_iface" ]]; then
+        active_ip=$(ip -4 addr show "$active_iface" | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
+        if [[ -n "$active_ip" ]]; then
+            found_connection=true
         fi
     fi
-done
+}
 
-# Traiter l'option
-case "$1" in
+# Récupérer l'adresse IP publique
+get_public_ip() {
+    if check_internet; then
+        public_ip=$(curl -s --max-time 3 https://api.ipify.org || echo "x.x.x.x")
+    fi
+}
+
+# Traiter l'option passée au script
+case "$option" in
     "status")
+        get_active_interface
         if [[ "$found_connection" == true ]]; then
-            # Prioriser Wi-Fi
-            if [[ -n "$wifi_ip" ]]; then
-                echo "   $wifi_info  ($wifi_signal)"
-            elif [[ -n "$ethernet_ip" ]]; then
-                echo "   $ethernet_iface"
+            if [[ "$active_iface" =~ ^wlan|^wlp ]]; then
+                # Si l'interface est Wi-Fi, récupérer le SSID
+                ssid=$(iw dev "$active_iface" link 2>/dev/null | grep -Eo "SSID: .+" | sed 's/SSID: //')
+                signal=$(iw dev "$active_iface" link 2>/dev/null | grep -Eo "signal: .+" | sed 's/signal: //')
+                echo "   $ssid  ($signal)"  # Affiche le SSID et la force du signal
+            else
+                # Sinon, afficher l'interface Ethernet
+                echo "   $active_iface"
             fi
         else
-            echo ""
+            echo ""  # Affiche une icône d'avertissement si aucune connexion n'est trouvée
         fi
         ;;
 
     "network")
+        get_active_interface
+        get_public_ip
         if [[ "$found_connection" == true ]]; then
-
-            public_ip=$(curl -s https://api.ipify.org)
-
-            # Prioriser Wi-Fi
-            if [[ -n "$wifi_ip" ]]; then
-                local_ip=$wifi_ip
-            elif [[ -n "$ethernet_ip" ]]; then
-                local_ip=$ethernet_ip
-            fi
-
-            echo "$local_ip | $public_ip"
-
+            echo "  $active_ip  |     $public_ip"  # Affiche l'adresse IP locale et publique
         else
-            echo "x.x.x.x | x.x.x.x"
+            echo "x.x.x.x | $public_ip"  # Affiche des valeurs par défaut
         fi
         ;;
-        
+
     *)
+        # Afficher l'utilisation correcte du script si l'option est invalide
         echo "Usage : $0 --status | --network"
         exit 1
         ;;
 esac
-
-
-
-
