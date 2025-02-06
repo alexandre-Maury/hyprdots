@@ -55,7 +55,7 @@ case "$option" in
         get_active_interface
         get_public_ip
         if [[ "$found_connection" == true ]]; then
-            echo "  $active_ip  |     $public_ip"  # Affiche l'adresse IP locale et publique
+            echo " $active_ip  |   $public_ip"  # Affiche l'adresse IP locale et publique
         else
             echo "x.x.x.x | $public_ip"  # Affiche des valeurs par défaut
         fi

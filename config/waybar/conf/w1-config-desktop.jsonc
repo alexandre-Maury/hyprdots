@@ -52,9 +52,10 @@
                  "transition-right-to-left": false
             },
             "modules": [
-                 "custom/system",
-                 "custom/cpu",
-                 "custom/memory"
+                    "custom/system",
+                    "custom/cpu",
+                    "custom/memory",
+                    "custom/disk"
             ]
        },
   
@@ -76,6 +77,13 @@
            "format": "{}",
            "tooltip": false,
            "on-click": "~/.config/waybar/scripts/ram-stats.sh --popup"    
+       },
+
+       "custom/disk":{  
+          "exec": "~/.config/waybar/scripts/disk-stats.sh",  
+          "format": "{}",  
+          "interval": 10,
+          "on-click": "~/.config/waybar/scripts/disk-stats.sh --popup"   
        },
        
   
