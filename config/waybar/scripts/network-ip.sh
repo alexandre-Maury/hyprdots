@@ -34,7 +34,7 @@ get_public_ip() {
 
 # Traiter l'option passée au script
 case "$option" in
-    "status")
+    "--status")
         get_active_interface
         if [[ "$found_connection" == true ]]; then
             if [[ "$active_iface" =~ ^wlan|^wlp ]]; then
@@ -51,7 +51,7 @@ case "$option" in
         fi
         ;;
 
-    "network")
+    "--network")
         get_active_interface
         get_public_ip
         if [[ "$found_connection" == true ]]; then
