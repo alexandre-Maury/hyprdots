@@ -12,7 +12,7 @@ create_graph() {
 
 # Fonction pour formater la mémoire
 format_memory() {
-    local mem=$(free -m | awk '/Mem:/ {print $3}')
+    local mem=$1
     if (( mem > 1024 )); then
         echo "$(( mem / 1024 ))G"
     else
@@ -33,15 +33,22 @@ case "$1" in
         ;;
     *)
         # Récupérer les données en temps réel
-        mem_usage=$(format_memory)
+        mem_usage=$(free -m | awk '/Mem:/ {print $3}')
         mem_total=$(free -m | awk '/Mem:/ {print $2}')
-        mem_percent=$(( $(free -m | awk '/Mem:/ {print $3}') * 100 / mem_total ))
+        mem_percent=$(( mem_usage * 100 / mem_total ))
+
+        # Formater l'utilisation et la capacité totale
+        mem_usage_formatted=$(format_memory "$mem_usage")
+        mem_total_formatted=$(format_memory "$mem_total")
 
         # Créer des graphiques avec des icônes Nerd Fonts
         mem_graph=$(create_graph "$mem_percent" 100)
 
         # Afficher les résultats avec des icônes Nerd Fonts
-        printf "  %s (%s%%) %s\n" \
-            "$mem_usage" "$mem_percent" "$mem_graph"
+        printf "  %s/%s (%s%%) %s\n" \
+            "$mem_usage_formatted" \
+            "$mem_total_formatted" \
+            "$mem_percent" \
+            "$mem_graph"
         ;;
 esac
