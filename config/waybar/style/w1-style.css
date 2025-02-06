@@ -5,8 +5,7 @@
  * {
     border: none;
     border-radius: 0;
-    font-family: FontAwesome, Roboto, Helvetica, monospace, sans-serif;
-    font-weight: bold;
+    font-family: Roboto, "Font Awesome 5", "JetBrainsMono", "FiraCode Nerd Font", "Hack Nerd Font", "Meslo Nerd Font", sans-serif;
     font-size: 12px;    
     padding: 0;
     min-height: 0;
@@ -61,6 +60,7 @@ tooltip {
     padding: 0px 10px;
     margin: 3px 0px;
     border: 2px solid #39404f;     
+    
 }
 
 #clock {
@@ -297,9 +297,10 @@ tooltip {
     margin-right: 0px;   
     border-left: 0px;
     border-right: 0px;
+    padding: 0px 10px;
 }
 
-#cpu, #custom-cputemp, #custom-memory, #custom-system  {
+#custom-cpu, #custom-system  {
     color: #8CAAEE;
     padding: 0px 10px;
     margin: 0px;

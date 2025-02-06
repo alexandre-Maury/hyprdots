@@ -7,6 +7,7 @@
       "passthrough": "false",
       "height": "15",
       "gtk-layer-shell": true,
+      "encoding": "UTF-8",
          
       
     //--- Modules ------------------------------
@@ -53,46 +54,29 @@
           },
           "modules": [
                "custom/system",
-               "cpu",
-               "custom/cputemp",
+               "custom/cpu",
                "custom/memory"
           ]
      },
 
      "custom/system": {
-          "format": "<span font='9'></span>"
+          "format": "<span font='9'></span>"
      },
 
-    "cpu": {
-          "interval": 1,
-          "on-click": "$HOME/.config/waybar/scripts/cpu.sh --popup",
-          "format": "Cpu {icon0}{icon1}{icon2}{icon3} {usage:>2}% ",
-          "tooltip": false,
-          "format-icons": [
-               "<span color='#8CAAEE'>▁</span>", // blue
-               "<span color='#99D1DB'>▂</span>", // sky
-               "<span color='#A6D189'>▃</span>", // green
-               "<span color='#A6D189'>▄</span>", // green
-               "<span color='#E5C890'>▅</span>", // yellow
-               "<span color='#E5C890'>▆</span>", // yellow
-               "<span color='#EF9F76'>▇</span>", // orange
-               "<span color='#E78284'>█</span>"  // red
-          ] 
-     },
-
-     "custom/cputemp":{
-          "exec": "$HOME/.config/waybar/scripts/temperature.sh",
-          "interval": 1,
-          "tooltip": false,
-          "on-click": "$HOME/.config/waybar/scripts/cpu-temp.sh --popup",
-          "on-click-right": "$HOME/.config/waybar/scripts/btop.sh",  
+     "custom/cpu":{
+         "exec": "~/.config/waybar/scripts/cpu-stats.sh",
+         "interval": 1,
+         "format": "{}",
+         "tooltip": false,
+         "on-click": "~/.config/waybar/scripts/cpu-stats.sh --popup"    
      }, 
-
+     
      "custom/memory":{  
-          "exec": "$HOME/.config/waybar/scripts/free-mem.sh",
-          "interval": 1,
-          "tooltip": false,
-          "on-click": "$HOME/.config/waybar/scripts/htop.sh",           
+         "exec": "~/.config/waybar/scripts/ram-stats.sh",
+         "interval": 1,
+         "format": "{}",
+         "tooltip": false,
+         "on-click": "~/.config/waybar/scripts/ram-stats.sh --popup"    
      },
 
   
