@@ -12,11 +12,6 @@ sudo docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/do
 echo "Accédez ensuite à l’interface de gestion de Docker avec Portainer via votre navigateur à http://localhost:9000."
 echo
 
-
-
-
-
-
 echo "Installation de Exegol :"
 echo
 echo "Exegol est une image Docker préconfigurée pour les tests de pénétration."
