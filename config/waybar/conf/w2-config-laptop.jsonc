@@ -1,19 +1,17 @@
 //------Layout v.1 laptop test ------------------------------  
 {
      "layer": "top",
-      "position": "top",
-      //"mode": "dock",
-      "exclusive": "true",
-      "passthrough": "false",
-      "height": "15",
-      "gtk-layer-shell": true,
-      "encoding": "UTF-8",
+     "position": "top",
+     "exclusive": "true",
+     "passthrough": "false",
+     "gtk-layer-shell": true,
+     "encoding": "UTF-8",
          
       
     //--- Modules ------------------------------
-         "modules-left": ["hyprland/workspaces", "custom/themeswitcher", "custom/settings", "group/system", "group/networking", "custom/traffic"],       
-         "modules-center": ["clock"],
-         "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "backlight", "custom/dunst", "custom/updates", "battery", "group/power"],
+     "modules-left": ["hyprland/workspaces", "custom/themeswitcher", "custom/settings", "group/system", "group/networking", "custom/traffic"],       
+     "modules-center": ["clock"],
+     "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "backlight", "custom/dunst", "custom/updates", "battery", "group/power"],
        
      "hyprland/workspaces": {
           "active-only": false,
@@ -21,30 +19,29 @@
           "tooltip": false,
           "all-outputs": true,
           "format-icons": {
-              "active": "",
-              "default": ""
+            "active": "",
+            "default": ""
           },
           "persistent-workspaces": {
-              "*": 5
+            "*": 5
           }
-     },   
-  
+     },
+
      "custom/themeswitcher": {
           "format": "<span font='9'></span>",
-          "on-click": "$HOME/.config/waybar/scripts/switch-waybar-config.sh",
+          "on-click": "~/.config/waybar/scripts/switch-waybar-config.sh",
           "tooltip-format": "",       
           "tooltip": false,
           "signal": 8   
      },
-  
+
      "custom/settings": {
-          "format": "",
-          "on-click": "$HOME/.config/waybar/scripts/settings.sh",        
+          "format": " "  ,
+          "on-click": "~/.config/waybar/scripts/settings.sh",      
           "tooltip-format": "",
           "signal": 8,
           "tooltip": false             
      },
-
 
      "group/system": {
           "orientation": "horizontal",
@@ -81,29 +78,29 @@
      },
 
      "custom/disk":{  
-          "exec": "~/.config/waybar/scripts/disk-stats.sh",  
-          "format": "{}",  
-          "interval": 10,
-          "on-click": "~/.config/waybar/scripts/disk-stats.sh --popup"   
-     },
+        "exec": "~/.config/waybar/scripts/disk-stats.sh",  
+        "format": "{}",  
+        "interval": 10,
+        "on-click": "~/.config/waybar/scripts/disk-stats.sh --popup"   
+    },
+     
 
-  
      "custom/reseau": {
-          "exec": "~/.config/waybar/scripts/network-ip.sh --status",
-          "interval": 5,
-          "format": "{}"
-          //"return-type": "json",
- 
-     },
-  
-       "custom/adressip": {
-          "exec": "~/.config/waybar/scripts/network-ip.sh --network",
-          "interval": 30,
-          "format": "{}"
-          //"return-type": "json",
+        "exec": "~/.config/waybar/scripts/network-ip.sh --status",
+        "interval": 5,
+        "format": "{}"
+        //"return-type": "json",
 
      },
-  
+
+     "custom/adressip": {
+        "exec": "~/.config/waybar/scripts/network-ip.sh --network",
+        "interval": 30,
+        "format": "{}"
+        //"return-type": "json",
+
+     },
+
      "group/networking": {
           "orientation": "horizontal",
           "drawer": {
@@ -115,20 +112,20 @@
                "custom/adressip"
           ]
      },
-  
+
      "custom/traffic": {
-          "exec": "$HOME/.config/waybar/scripts/network-traffic.sh",
+          "exec": "~/.config/waybar/scripts/network-traffic.sh"
           //"return-type": "json",
           //"format": " Speed: {}",    // optional
      },
-  
+
      "tray": {
           "icon-size": 13,
           "spacing": 10,
           "tooltip": false
-  
+
      },  
-  
+
      "custom/pipewire-audio": {
           "tooltip": false,
           "max-length": 8,
@@ -139,9 +136,9 @@
           "on-scroll-down": "sh -c 'touch /tmp/waybar_volume_down'",
           "scroll-step": 2,
           "restart-interval": 5
-       
+     
      },  
-  
+
      "custom/pipewire-mic": {
           "tooltip": false,
           "max-length": 8,
@@ -152,55 +149,55 @@
           "on-scroll-down": "sh -c 'touch /tmp/waybar_microphone_down'",
           "scroll-step": 2,
           "restart-interval": 5
-       
+     
      },  
-  
+
      "clock": {
           "format": " {:%R  %a,%d %b} ",
           "format-alt": " {:%H:%M} ",        
           "tooltip-format": "<tt><small>{calendar}</small></tt>",
           "calendar": {
-               "mode"          : "year",
-               "mode-mon-col"  : 3,
-               "weeks-pos"     : "right",
-               "on-scroll"     : 1,
-               "on-click-right": "mode",
-               "format": {
-                    "months":     "<span color='#ffead3'><b>{}</b></span>",
-                    "days":       "<span color='#ecc6d9'><b>{}</b></span>",
-                    "weeks":      "<span color='#A6D189'><b>W{}</b></span>",
-                    "weekdays":   "<span color='#E5C890'><b>{}</b></span>",
-                    "today":      "<span color='#E78284'><b><u>{}</u></b></span>"
-               }
-          },
+                    "mode"          : "year",
+                    "mode-mon-col"  : 3,
+                    "weeks-pos"     : "right",
+                    "on-scroll"     : 1,
+                    "on-click-right": "mode",
+                    "format": {
+                              "months":     "<span color='#ffead3'><b>{}</b></span>",
+                              "days":       "<span color='#ecc6d9'><b>{}</b></span>",
+                              "weeks":      "<span color='#A6D189'><b>W{}</b></span>",
+                              "weekdays":   "<span color='#E5C890'><b>{}</b></span>",
+                              "today":      "<span color='#E78284'><b><u>{}</u></b></span>"
+                              }
+                    },
           "actions":  {
-               "on-click-right": "mode",
-               "on-click-forward": "tz_up",
-               "on-click-backward": "tz_down",
-               "on-scroll-up": "shift_up",
-               "on-scroll-down": "shift_down"
-          }
-            
+                    "on-click-right": "mode",
+                    "on-click-forward": "tz_up",
+                    "on-click-backward": "tz_down",
+                    "on-scroll-up": "shift_up",
+                    "on-scroll-down": "shift_down"
+                    }
+          
      },
-  
+
      "custom/dunst": {
-          "exec": "$HOME/.config/waybar/scripts/notifications.sh",
+          "exec": "~/.config/waybar/scripts/notifications.sh",
           "on-click": "~/.config/waybar/scripts/notifications.sh toggle",
           "interval": 1,
           "tooltip": false           
      }, 
-  
+
      "custom/updates": {
-          "exec": "$HOME/.config/waybar/scripts/updates.sh",
+          "exec": "~/.config/waybar/scripts/updates.sh",
           "exec-if": "exit 0",
           "interval": 300,      
           "format": "<span font='10' rise='1000'>󰏔 </span>{}",
           "on-click": "kitty --title 'Updates' sh -c 'sudo pacman -Syu && yay -Syu --noconfirm && ~/.config/waybar/scripts/updates.sh && pkill -RTMIN+8 waybar'",
           "signal": 8,
           "tooltip": false       
-            
+          
      }, 
-  
+
      "group/power": {
 
           "orientation": "horizontal",
@@ -247,7 +244,7 @@
           "tooltip": false,
           "on-click": "$HOME/.config/waybar/scripts/power.sh -r"
      },
-     
+
      "battery": {
           "exec": "$HOME/.config/waybar/scripts/battery.sh",      
           "interval": 60,  

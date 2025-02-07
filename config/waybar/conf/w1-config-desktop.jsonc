@@ -2,10 +2,8 @@
 {
      "layer": "top",
       "position": "top",
-      //"mode": "dock",
       "exclusive": "true",
       "passthrough": "false",
-      "height": "15",
       "gtk-layer-shell": true,
       "encoding": "UTF-8",
          
@@ -27,7 +25,7 @@
             "persistent-workspaces": {
               "*": 5
             }
-       },   
+       },
   
        "custom/themeswitcher": {
             "format": "<span font='9'></span>",
@@ -52,10 +50,10 @@
                  "transition-right-to-left": false
             },
             "modules": [
-                    "custom/system",
-                    "custom/cpu",
-                    "custom/memory",
-                    "custom/disk"
+                 "custom/system",
+                 "custom/cpu",
+                 "custom/memory",
+                 "custom/disk"
             ]
        },
   
@@ -84,7 +82,7 @@
           "format": "{}",  
           "interval": 10,
           "on-click": "~/.config/waybar/scripts/disk-stats.sh --popup"   
-       },
+      },
        
   
        "custom/reseau": {
