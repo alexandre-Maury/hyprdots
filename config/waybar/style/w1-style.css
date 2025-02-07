@@ -12,6 +12,21 @@
     margin: 0;
 }
 
+window#waybar {
+    background-color: rgba(46, 52, 64, 0.0);
+    transition-property: background-color;    
+    transition-duration: .5s;
+}
+
+
+window#waybar.hidden {
+    opacity: 0.5;   
+}
+
+window#waybar.empty #window {  
+    background:none;  
+}
+
 tooltip {
     background: linear-gradient(85deg, #39404f 5%, #39404f 45%, #39404f 75%);
     border-radius: 10px;

@@ -2,7 +2,7 @@
  * General 
  * ----------------------------------------------------- */
 
- * {
+* {
     
     border: none;
     border-radius: 0;
@@ -10,6 +10,21 @@
     font-size: 12px;    
     padding: 0;
     margin: 0;
+}
+
+window#waybar {
+    background-color: rgba(46, 52, 64, 0.0);
+    transition-property: background-color;    
+    transition-duration: .5s;
+}
+
+
+window#waybar.hidden {
+    opacity: 0.5;   
+}
+
+window#waybar.empty #window {  
+    background:none;  
 }
 
 tooltip {
