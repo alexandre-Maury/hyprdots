@@ -1,30 +1,8 @@
 #!/bin/bash
 
-
-echo "Installation de Portainer :"
-echo
-echo "Portainer est une interface de gestion pour Docker." 
-echo "Il s'installe directement avec Docker et est exécuté comme un conteneur." 
-echo "Exécutez cette commande pour télécharger et lancer Portainer :"
-
-sudo docker run -d -p 9000:9000 --name portainer --restart always -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer
-
-echo "Accédez ensuite à l’interface de gestion de Docker avec Portainer via votre navigateur à http://localhost:9000."
-echo
-
 echo "Installation de Exegol :"
 echo
 echo "Exegol est une image Docker préconfigurée pour les tests de pénétration."
-
-
-# Solution 1 - Téléchargement de l'image Exegol via docker
-
-# sudo docker pull nwodtuhs/exegol:full
-# echo 'alias meta="clear && docker run --rm -it --name pentest --entrypoint bash nwodtuhs/exegol:full"' | tee -a ~/.zshrc
-# source ~/.zshrc
-
-
-# Solution 2 - Intallation du repo git
 
 script_dir="$HOME/.config/exegol"
 
