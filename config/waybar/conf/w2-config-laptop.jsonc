@@ -9,9 +9,9 @@
          
       
     //--- Modules ------------------------------
-     "modules-left": ["hyprland/workspaces", "custom/themeswitcher", "custom/settings", "group/system", "group/networking", "custom/traffic"],       
+     "modules-left": ["hyprland/workspaces", "group/system", "group/networking", "custom/traffic"],       
      "modules-center": ["clock"],
-     "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "backlight", "custom/dunst", "custom/updates", "battery", "group/power"],
+     "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "backlight", "custom/dunst", "custom/themeswitcher", "custom/updates", "battery", "group/power"],
        
      "hyprland/workspaces": {
           "active-only": false,
@@ -33,14 +33,6 @@
           "tooltip-format": "",       
           "tooltip": false,
           "signal": 8   
-     },
-
-     "custom/settings": {
-          "format": " "  ,
-          "on-click": "~/.config/waybar/scripts/settings.sh",      
-          "tooltip-format": "",
-          "signal": 8,
-          "tooltip": false             
      },
 
      "group/system": {
