@@ -11,7 +11,7 @@
     //--- Modules ------------------------------
          "modules-left": ["hyprland/workspaces", "group/system", "group/networking", "custom/traffic"],       
          "modules-center": ["clock"],
-         "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "custom/dunst", "custom/themeswitcher", "custom/updates", "group/power"],
+         "modules-right": ["tray", "custom/pipewire-audio", "custom/pipewire-mic", "custom/firewall", "custom/dunst", "custom/themeswitcher", "custom/updates", "group/power"],
        
        "hyprland/workspaces": {
             "active-only": false,
@@ -163,6 +163,14 @@
                       }
             
        },
+
+       "custom/firewall": {
+          "format": "{}",  
+          "exec": "~/.config/waybar/scripts/firewall.sh",
+          "interval": 1,  
+          "on-click": "~/.config/waybar/scripts/firewall.sh --toggle",
+          "tooltip": true
+       },
   
        "custom/dunst": {
             "exec": "~/.config/waybar/scripts/notifications.sh",
@@ -178,15 +186,6 @@
           "tooltip": false,
           "signal": 8   
        },
-
-       "custom/firewall": {
-          "exec": "~/.config/waybar/scripts/firewall.sh",
-          "interval": 10,  // Rafraîchir l'état toutes les 10 secondes
-          "format": "{icon}",
-          "return-type": "json",
-          "on-click": "~/.config/waybar/scripts/firewall.sh toggle",
-          "tooltip": true
-      },
   
        "custom/updates": {
             "exec": "~/.config/waybar/scripts/updates.sh",

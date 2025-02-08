@@ -179,6 +179,22 @@ tooltip {
     margin-bottom: 0px;
 }
 
+#custom-firewall {
+    color: #d8dee9;
+    background: linear-gradient(85deg, #39404f 5%, #39404f 45%, #39404f 75%);
+    border-radius: 10px;
+    border: none;        
+    border-left: 0px;
+    border-right: 0px;    
+    padding: 0px 5px;
+
+    margin-left: 3px;
+    margin-right: 3px;
+    margin-top: 6px;
+    margin-bottom: 0px;
+}
+
+
 #custom-dunst {
     color: #d8dee9;
     background: linear-gradient(85deg, #39404f 5%, #39404f 45%, #39404f 75%);
