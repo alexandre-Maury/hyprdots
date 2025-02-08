@@ -27,14 +27,6 @@
           }
      },
 
-     "custom/themeswitcher": {
-          "format": "<span font='9'></span>",
-          "on-click": "~/.config/waybar/scripts/switch-waybar-config.sh",
-          "tooltip-format": "",       
-          "tooltip": false,
-          "signal": 8   
-     },
-
      "group/system": {
           "orientation": "horizontal",
           "drawer": {
@@ -178,6 +170,22 @@
           "interval": 1,
           "tooltip": false           
      }, 
+
+     "custom/themeswitcher": {
+          "format": "<span font='9'></span>",
+          "on-click": "~/.config/waybar/scripts/switch-waybar-config.sh",
+          "tooltip-format": "",       
+          "tooltip": false,
+          "signal": 8   
+     },
+
+     "custom/firewall": {
+          "format": "{icon}",
+          "exec": "~/.config/waybar/scripts/firewall.sh",
+          "interval": 10,  
+          "on-click": "~/.config/waybar/scripts/firewall.sh toggle",
+          "tooltip": true
+     },
 
      "custom/updates": {
           "exec": "~/.config/waybar/scripts/updates.sh",
