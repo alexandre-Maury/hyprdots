@@ -3,10 +3,18 @@
 # Créer un fichier temporaire pour les règles
 temp_rules=$(mktemp)
 
-echo "Installation de nftables et rsyslog..."
+echo "Installation de nftables..."
 
-# Installer nftables et rsyslog 
-yay -S --noconfirm nftables rsyslog
+# Installer nftables (utilisez yay pour Arch Linux)
+if ! command -v yay &> /dev/null; then
+    echo "Erreur : yay n'est pas installé. Veuillez installer yay pour continuer."
+    exit 1
+fi
+yay -S --noconfirm nftables
+
+# Supprimer la table firewall existante pour éviter les doublons
+echo "Suppression de la table firewall existante..."
+sudo nft delete table inet firewall 2>/dev/null || true
 
 # Écrire les règles dans le fichier temporaire
 cat << 'EOF' > "$temp_rules"
@@ -35,56 +43,59 @@ if ! sudo nft -f "$temp_rules"; then
     exit 1
 fi
 
+# Vérifier que les règles ont été appliquées
+if ! sudo nft list ruleset | grep -q "nft-drop:"; then
+    echo "Erreur : Les règles nftables n'ont pas été appliquées correctement."
+    rm -f "$temp_rules"
+    exit 1
+fi
+
 # Sauvegarder la configuration
 sudo nft list ruleset | sudo tee /etc/nftables.conf > /dev/null
 
 # Nettoyer le fichier temporaire
 rm -f "$temp_rules"
 
-# Créer le répertoire /etc/rsyslog.d/ s'il n'existe pas
-if [ ! -d "/etc/rsyslog.d" ]; then
-    echo "Création du répertoire /etc/rsyslog.d..."
-    sudo mkdir -p /etc/rsyslog.d
-fi
-
-# Créer la configuration de rsyslog pour nftables
-echo ':msg, startswith, "nft-drop:" -/var/log/nftables.log
-& stop' | sudo tee /etc/rsyslog.d/nftables.conf > /dev/null
-
-# Créer le fichier de log et définir les permissions
-sudo touch /var/log/nftables.log
-
-# Vérifier l'existence de l'utilisateur et du groupe 'syslog'
-if ! getent passwd syslog &>/dev/null || ! getent group syslog &>/dev/null; then
-    echo "L'utilisateur ou le groupe 'syslog' n'existe pas, création en cours..."
-    sudo useradd -r -s /bin/false syslog
-    sudo groupadd syslog
-fi
-
-# Changer le propriétaire du fichier de log
-sudo chown syslog:syslog /var/log/nftables.log
-
-# Définir les bonnes permissions
-sudo chmod 640 /var/log/nftables.log
-
-# Configurer logrotate pour nftables.log
-echo "/var/log/nftables.log {
-    size 10M
-    rotate 4
-    missingok
-    notifempty
-    compress
-    delaycompress
-    sharedscripts
-    postrotate
-        /usr/bin/systemctl kill -s HUP rsyslog.service >/dev/null 2>&1 || true
-    endscript
-}" | sudo tee /etc/logrotate.d/nftables > /dev/null
-
 echo "Configuration du pare-feu nftables terminée."
 
-# Activer et démarrer les services nftables et rsyslog
-sudo systemctl enable --now nftables.service
-sudo systemctl enable --now rsyslog.service
+# Créer un fichier de service systemd pour nftables (en utilisant journald)
+echo "[Unit]
+Description=Règles de pare-feu nftables avec journald
+After=network.target
 
-echo "Le pare-feu nftables et rsyslog ont été configurés avec succès."
+[Service]
+ExecStartPre=/usr/sbin/nft -f /etc/nftables.conf
+ExecStart=$HOME/scripts/nftables-log-watcher.sh
+Restart=always
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nftables-log
+
+[Install]
+WantedBy=multi-user.target" | sudo tee /etc/systemd/system/nftables-journald.service > /dev/null
+
+# Activer et démarrer le service systemd
+sudo systemctl daemon-reload
+sudo systemctl enable --now nftables-journald.service
+
+echo "Le pare-feu nftables est configuré pour utiliser journald pour les logs."
+
+# Activer et démarrer le service nftables
+sudo systemctl enable --now nftables.service
+
+echo "Le pare-feu nftables a été configuré avec succès avec journald."
+
+# Configurer logrotate pour gérer la taille des logs générés par journald
+echo "/var/log/journal/*/*/system.journal {
+    size 100M
+    rotate 4
+    compress
+    delaycompress
+    missingok
+    notifempty
+    postrotate
+        /usr/bin/systemctl kill -s HUP systemd-journald.service >/dev/null 2>&1 || true
+    endscript
+}" | sudo tee /etc/logrotate.d/journald > /dev/null
+
+echo "Logrotate a été configuré pour gérer les logs journald."
