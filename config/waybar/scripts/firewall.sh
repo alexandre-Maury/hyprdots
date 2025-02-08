@@ -68,9 +68,10 @@ case "$1" in
         ;;
 esac
 
-# Afficher l'icône et l'état avec printf
+# Afficher l'icône et l'état avec la couleur correspondante
 if [ "$NF_STATUS" == "active" ]; then
-    printf " Firewall: Actif\n"
+    printf "<span color=\"#32CD32\"> Firewall: Actif</span>\n"  # Vert pour actif
 else
-    printf " Firewall: Inactif\n"
+    # printf " Firewall: Inactif\n"  # Bouclier rouge
+    printf "<span color=\"#FF6347\"> Firewall: Inactif</span>\n"  # Bouclier rouge pour inactif
 fi
