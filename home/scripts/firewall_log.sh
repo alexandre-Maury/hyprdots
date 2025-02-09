@@ -79,6 +79,7 @@ case "$1" in
         show_help
         ;;
     *)
+        clear && echo
         echo "Option non reconnue"
         show_help
         exit 1
