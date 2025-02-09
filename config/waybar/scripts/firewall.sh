@@ -1,55 +1,57 @@
 #!/bin/bash
 
+# Définition des variables
+NFTABLES_CONF="/etc/nftables.conf"
+NFTABLES_LOG="/var/log/nftables.log"
+SERVICE_FILE="/etc/systemd/system/nftables-journald.service"
+
+# Fonction pour gérer les erreurs
+handle_error() {
+    echo "Erreur : $1" >&2
+    exit 1
+}
+
 # Fonction pour vérifier l'état de nftables
 check_nft_status() {
     if sudo nft list ruleset | grep -q "table inet firewall"; then
         echo "active"
     else
-        echo "inactive"
+        echo "inactif"
     fi
 }
 
 # Fonction pour activer nftables
 enable_nftables() {
 
-    # Créer un fichier temporaire pour les règles
-    temp_rules=$(mktemp)
 
-    # Écrire les règles dans le fichier temporaire
-    cat << 'EOF' > "$temp_rules"
-flush ruleset
+    # Appliquer les règles nftables
+    echo "Activation du firewall..."
+    if ! sudo nft -f "$NFTABLES_CONF"; then
+        handle_error "Échec de l'application des règles nftables."
+    fi
 
-add table inet firewall
-add chain inet firewall input { type filter hook input priority 0 ; policy drop ; }
-add chain inet firewall output { type filter hook output priority 0 ; policy accept ; }
-add chain inet firewall forward { type filter hook forward priority 0 ; policy drop ; }
+    # Démarrer les services systemd
+    sudo systemctl start nftables.service
+    sudo systemctl start nftables-journald.service
 
-add rule inet firewall input ct state established,related accept
-add rule inet firewall input ct state invalid drop
-add rule inet firewall input iif lo accept
-
-add rule inet firewall input ip protocol icmp accept
-add rule inet firewall input ip6 nexthdr icmpv6 accept
-
-add rule inet firewall input log prefix "nft-drop: " level debug
-add rule inet firewall input counter reject with icmpx type admin-prohibited
-EOF
-
-    # Appliquer les règles avec sudo
-    sudo nft -f "$temp_rules"
-
-    # Sauvegarder la configuration
-    sudo nft list ruleset | sudo tee /etc/nftables.conf > /dev/null
-
-    # Nettoyer le fichier temporaire
-    rm -f "$temp_rules"
-
+    echo "Firewall activé avec succès."
 }
 
 # Fonction pour désactiver nftables
 disable_nftables() {
-    #sudo nft flush ruleset
+
+    # Flush les règles nftables
+    echo "Désactivation du firewall..."
     echo "flush ruleset" | sudo nft -f -
+
+    # Arrêter les services systemd
+    sudo systemctl stop nftables.service
+    sudo systemctl stop nftables-journald.service
+
+    # Vider le fichier de log
+    sudo truncate -s 0 "$NFTABLES_LOG"
+
+    echo "Firewall désactivé avec succès."
 }
 
 # Vérifier l'état actuel de nftables
@@ -72,6 +74,5 @@ esac
 if [ "$NF_STATUS" == "active" ]; then
     printf "<span color=\"#32CD32\"> Firewall: Actif</span>\n"  # Vert pour actif
 else
-    # printf " Firewall: Inactif\n"  # Bouclier rouge
-    printf "<span color=\"#FF6347\"> Firewall: Inactif</span>\n"  # Bouclier rouge pour inactif
+    printf "<span color=\"#FF6347\"> Firewall: Inactif</span>\n"  # Rouge pour inactif
 fi
