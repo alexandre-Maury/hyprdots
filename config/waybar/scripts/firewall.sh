@@ -49,7 +49,7 @@ disable_nftables() {
     # sudo systemctl stop nftables-journald.service
 
     # Vider le fichier de log
-    # sudo truncate -s 0 "$NFTABLES_LOG"
+    sudo truncate -s 0 "$NFTABLES_LOG"
 
     echo "Firewall désactivé avec succès."
 }
