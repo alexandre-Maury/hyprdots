@@ -32,8 +32,6 @@ enable_nftables() {
 
     # Démarrer les services systemd
     sudo systemctl start nftables.service
-    # sudo systemctl start nftables-journald.service
-
     echo "Firewall activé avec succès."
 }
 
@@ -46,7 +44,6 @@ disable_nftables() {
 
     # Arrêter les services systemd
     sudo systemctl stop nftables.service
-    # sudo systemctl stop nftables-journald.service
 
     # Vider le fichier de log
     sudo truncate -s 0 "$NFTABLES_LOG"
